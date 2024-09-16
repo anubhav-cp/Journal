@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <%- include('./partials/navbar.ejs')%>
+
+      <div class=" bg-transparent p-4 w-full max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold text-center mb-6">Web developer and content creator.</h1>
+        
+
+        
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Latest Posts</h2>
+          <a href="/create-post" class="text-blue-600 hover:text-blue-800">Create Post</a>
+      </div>
+        
+        
+        <div class="space-y-4">
+          <% posts.forEach((post) => { %>
+          <div class="flex justify-between items-center">
+            <a href="/post/<%= post._id %>">
+            <h3 class="text-lg"><%= post.title %></h3></a>
+            <span class="text-sm text-gray-500"><%= post.created_at.toDateString() %></span>
+          </div>
+          <% }) %>
+        </div>
+        
+        <% if (nextPage !== null) { %>
+          <div class="mt-6">
+            <a href="/?page=<%= nextPage %>" class="text-blue-600 hover:text-blue-800">← View Older Posts</a>
+          </div>
+          <% } %>
+        
+      </div>
+</body>
+</html>

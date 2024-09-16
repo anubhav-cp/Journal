@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New Post</title>
+
+  <!-- Editor.js and Tools CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@latest"></script>
+
+  <!-- Basic styling for the editor -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      padding: 20px;
+      color: #fff;
+    }
+    #editorjs {
+      background-color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 10px;
+      min-height: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    .ce-toolbar__content {
+      background-color: #555 !important;
+    }
+    .ce-block__content {
+      color: #fff !important;
+    }
+    #saveButton {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #saveButton:hover {
+      background-color: #45a049;
+    }
+    #titleInput {
+      display: block;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto 20px;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <input type="text" id="titleInput" placeholder="Enter post title">
+  <div id="editorjs"></div>
+  <button id="saveButton">Save Content</button>
+
+  <script>
+    const editor = new EditorJS({
+        holder: 'editorjs',
+        tools: {
+            header: Header,
+            list: List,
+            quote: Quote,
+            paragraph: Paragraph
+        },
+        placeholder: 'Start writing here...',
+    });
+
+
+    document.getElementById('saveButton').addEventListener('click', () => {
+      editor.save().then((outputData) => {
+        const title = document.getElementById('titleInput').value;
+        const postData = {
+          title: title,
+          body: outputData // Store the raw JSON output
+        };
+
+        // Send the content to the server
+        fetch('/savePost', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Post saved:', data);
+          alert('Post saved successfully!');
+          // Optionally redirect to the new post or clear the editor
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to save post. Please try again.');
+        });
+      }).catch((error) => {
+        console.log('Saving failed:', error);
+      });
+    });
+  </script>
+</body>
+</html>

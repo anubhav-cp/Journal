@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+
+    <!-- Editor.js and Tools CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@latest"></script>
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #editorjs {
+            max-width: 800px;
+            margin: 0 auto;
+            /* background-color: #111; */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <div id="editorjs"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let bodyData;
+            try {
+                bodyData = JSON.parse('<%- body.replace(/\'/g, "\\'").replace(/\n/g, "\\n") %>');
+            } catch (error) {
+                console.error('Error parsing body data:', error);
+                return;
+            }
+
+            if (!bodyData || !bodyData.blocks) {
+                console.error('Invalid body data structure');
+                return;
+            }
+
+            const editor = new EditorJS({
+                holder: 'editorjs',
+                data: bodyData,
+                readOnly: true,
+                tools: {
+                    header: {
+                        class: Header,
+                        inlineToolbar: false
+                    },
+                    list: {
+                        class: List,
+                        inlineToolbar: false
+                    },
+                    quote: {
+                        class: Quote,
+                        inlineToolbar: false
+                    },
+                    paragraph: {
+                        class: Paragraph,
+                        inlineToolbar: false
+                    }
+                },
+                onReady: () => {
+                    console.log('Editor.js is ready');
+                },
+                onError: (error) => {
+                    console.error('Editor.js error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
